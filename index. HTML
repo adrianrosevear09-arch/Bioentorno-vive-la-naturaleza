@@ -1,0 +1,1020 @@
+ <!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioEntorno | Dossier Técnico y Memoria de Ruta</title>
+
+  <!-- Librería Leaflet para Cartografía -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    /* --- VARIABLES DE DISEÑO --- */
+    :root {
+      --primary: #1b3d2f;
+      --secondary: #2d5a27;
+      --accent: #a3b18a;
+      --text-main: #333333;
+      --text-light: #555555;
+      --bg-light: #f8f9fa;
+      --white: #ffffff;
+      --border: #e0e0e0;
+    }
+
+  body {/* TIMELINE PROFESIONAL */
+.timeline {
+    position: relative;
+    margin: 20px 0;
+    padding-left: 30px;
+    border-left: 3px solid #2d5a27;
+}
+
+.timeline-item {
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    position: relative;
+    font-size: 0.95rem;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 20px;
+    width: 15px;
+    height: 15px;
+    background: #2d5a27;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+}
+
+    /* --- CABECERA --- */
+    header {
+      height: 70vh;
+      background: linear-gradient(rgba(27, 61, 47, 0.8), rgba(45, 90, 39, 0.8)),
+        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--white);
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .header-content {
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      padding: 50px 80px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-top: 15px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* --- MENÚ DE NAVEGACIÓN --- */
+    nav {
+      background: var(--primary);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 5px 10px;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    /* --- ESTRUCTURA DE SECCIONES --- */
+    section {
+      max-width: 1000px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .section-title .divider {
+      width: 60px;
+      height: 4px;
+      background: var(--secondary);
+      margin: 20px auto 0;
+    }
+
+    /* --- BLOQUES DE INFORMACIÓN --- */
+    .info-block {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 40px;
+      margin-bottom: 30px;
+      border-radius: 4px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .info-block:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    .info-block h3 {
+      color: var(--secondary);
+      font-size: 1.3rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      border-left: 5px solid var(--accent);
+      padding-left: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-block p {
+      text-align: justify;
+      color: var(--text-light);
+      font-size: 1rem;
+      margin-bottom: 0;
+    }
+
+    /* --- LISTAS Y TABLAS --- */
+    .technical-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .technical-list li {
+      background: var(--bg-light);
+      padding: 15px;
+      border: 1px solid var(--border);
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: var(--white);
+    }
+
+    th,
+    td {
+      padding: 18px;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+    
+    /* --- BOTONES --- */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      background: var(--primary);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-radius: 3px;
+      transition: background 0.3s;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+    }
+
+    .btn-alt {
+      background: #333333;
+    }
+
+    .btn-alt:hover {
+      background: #000000;
+    }
+
+    .btn-reserva {
+      background: #25D366;
+    }
+
+    /* Color WhatsApp */
+    #map-container {
+      height: 550px;
+      width: 100%;
+      border: 1px solid var(--border);
+      z-index: 1;
+    }
+
+    footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 50px 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>BioEntorno</h1>
+      <p>Memoria Técnica de Intervención en el Medio Natural</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#justificacion">Ficha Técnica</a>
+    <a href="#cultural">Interés Cultural</a>
+    <a href="#paisajistico">Interés Paisajístico</a>
+    <a href="#ambiental">Valor Ambiental</a>
+    <a href="#deportivo">Interés Deportivo</a>
+    <a href="#salud">Beneficios Físicos</a>
+    <a href="#biodiversidad">Biodiversidad</a>
+    <a href="#itinerario">Itinerario y Cartografía</a>
+    <a href="#documentacion">Documentación y Multimedia</a>
+  </nav>
+
+  <!-- 1. JUSTIFICACIÓN Y FICHA TÉCNICA -->
+  <section id="justificacion">
+    <div class="section-title">
+      <h2>Justificación y Ficha Técnica</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Diseño del Itinerario</h3>
+      <p>La ruta "Entre Pinos y Cristales: El Secreto del Alaminos" ha sido diseñada con un profundo enfoque pedagógico y de conservación. Se ha seleccionado este entorno específico por su capacidad para narrar la evolución del territorio, combinando la historia de la minería de extracción con la resiliencia biológica de la sierra malagueña tras el cese de la actividad industrial.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Parámetros Técnicos de la Ruta</h3>
+      <p>El recorrido ha sido evaluado bajo los estándares de seguridad en montaña para garantizar una experiencia controlada y formativa. El perfil del trazado exige un nivel físico medio, ideal para grupos en formación y senderistas habituales.</p>
+      <ul class="technical-list">
+        <li>Distancia Total: 15,24 km</li>
+        <li>Tipología: Circular</li>
+        <li>Tiempo Estimado: 4 - 5 horas</li>
+        <li>Dificultad MIDE: Media (2-3-2-3)</li>
+      </ul>
+    </div>
+  </section>
+<!-- CRONOGRAMA -->
+<section id="horario">
+    <div class="section-title">
+        <h2>Planificación Temporal</h2>
+        <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <strong>08:30</strong><br>
+                Recepción del grupo, presentación del guía y revisión del material obligatorio.
+            </div>
+
+            <div class="timeline-item">
+                <strong>09:00</strong><br>
+                Inicio de la ruta y explicación introductoria del entorno natural.
+            </div>
+
+            <div class="timeline-item">
+                <strong>10:30</strong><br>
+                Parada técnica para hidratación y control del grupo.
+            </div>
+
+            <div class="timeline-item">
+                <strong>11:30</strong><br>
+                Parada interpretativa en las minas de hierro (explicación histórica).
+            </div>
+
+            <div class="timeline-item">
+                <strong>13:00</strong><br>
+                Descanso principal y almuerzo en Barranco Blanco.
+            </div>
+
+            <div class="timeline-item">
+                <strong>14:30</strong><br>
+                Retorno por sendero alternativo y actividades de dinamización.
+            </div>
+
+            <div class="timeline-item">
+                <strong>15:30</strong><br>
+                Final de la actividad, estiramientos y cierre de la experiencia.
+            </div>
+
+        </div>
+    </div>
+</section>
+  <!-- 2. INTERÉS CULTURAL -->
+  <section id="cultural">
+    <div class="section-title">
+      <h2>Interés Cultural</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Zona Minera Histórica</h3>
+      <p>La zona que abarca el Cerro Alaminos y el Barranco Blanco posee un valor cultural incalculable. Constituye un entorno donde la actividad minera histórica ha dejado una huella profunda, transformando la orografía y creando un paisaje único donde la intervención antropológica y la ecología se fusionan de manera indisoluble.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Historia de las Minas de Hierro</h3>
+      <p>Durante los siglos XIX y XX, este enclave fue escenario de una intensa prospección y explotación geológica. La actividad principal se centró en la extracción de mineral de hierro, un recurso fundamental que definió la economía de la época y modificó las dinámicas sociales de los municipios colindantes.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Desarrollo Industrial de Málaga</h3>
+      <p>Estas explotaciones no eran elementos aislados, sino que estaban íntimamente vinculadas al desarrollo industrial global de la provincia de Málaga. Las pequeñas minas locales funcionaban como una red de abastecimiento primario, nutriendo de mineral a las grandes ferrerías y centros metalúrgicos cercanos, siendo auténticos motores del progreso regional.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Patrimonio Industrial Abandonado</h3>
+      <p>En la actualidad, el itinerario permite la observación directa de los restos de esta época. Las galerías de extracción, las antiguas excavaciones a cielo abierto y las extensas escombreras de material estéril forman ahora parte de un patrimonio industrial abandonado que ha sido silenciosamente reconquistado por la vegetación, integrándose plenamente en el paisaje natural.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Uso Tradicional y Convivencia</h3>
+      <p>Más allá de la industria, la zona conserva intacta la red de caminos tradicionales. Estas vías de comunicación, utilizadas secularmente por agricultores y pastores trashumantes, reflejan un uso del territorio fundamentado en la sostenibilidad y evidencian la convivencia histórica entre la actividad humana de subsistencia y el entorno natural.</p>
+    </div>
+  </section>
+
+  <!-- 3. INTERÉS PAISAJÍSTICO -->
+  <section id="paisajistico">
+    <div class="section-title">
+      <h2>Interés Paisajístico</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Paisaje de Sierra Mediterránea</h3>
+      <p>El perfil visual del recorrido está dominado por la clásica sierra mediterránea. Se caracteriza por un relieve de colinas suaves y laderas continuas, tapizadas por densas formaciones de pino carrasco, encinares maduros y un sotobosque arbustivo muy desarrollado, creando la atmósfera cromática típica de la Andalucía interior.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Barranco Blanco</h3>
+      <p>Este enclave constituye la joya paisajística de la ruta. Se trata de un ecosistema fluvial con pozas de agua natural cristalina y un espeso bosque de galería o vegetación de ribera. Supone el punto más atractivo del recorrido debido al dramático contraste estético entre la aridez de la roca caliza circundante y la exuberancia hídrica del cauce.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Relieve y Miradores Naturales</h3>
+      <p>La orografía del terreno y los cambios de altitud progresivos a lo largo de los 15 kilómetros de ruta proporcionan balcones naturales privilegiados. Estos miradores permiten observar amplias vistas panorámicas que dominan todo el valle de Coín y las formaciones montañosas de las sierras cercanas.</p>
+    </div>
+  </section>
+<section id="logistica" style="font-family: Arial, sans-serif; padding: 20px; max-width: 1000px; margin: auto;">
+    <h2 style="text-align:center; margin-bottom: 20px;">4. Logística y Material Técnico</h2>
+
+    <table style="
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    ">
+        <thead>
+            <tr style="background-color: #2c3e50; color: white; text-align: left;">
+                <th style="padding: 15px;">Categoría</th>
+                <th style="padding: 15px;">Contenido</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr style="background-color: #f8f9fa;">
+                <td style="padding: 15px;"><strong>Material Individual</strong></td>
+                <td style="padding: 15px;">
+                    Mochila 20L, botas de montaña, ropa técnica por capas, gorra, crema solar SPF alto, silbato, cantimplora (mín. 1L), impermeable ligero.
+                </td>
+            </tr>
+
+            <tr style="background-color: #ffffff;">
+                <td style="padding: 15px;"><strong>Material Colectivo (Guía)</strong></td>
+                <td style="padding: 15px;">
+                    Botiquín tipo C, GPS Garmin con mapas offline, mapa 1:25.000, radio VHF, manta térmica gruesa, cuerda auxiliar, kit de reparación básica.
+                </td>
+            </tr>
+
+            <tr style="background-color: #f8f9fa;">
+                <td style="padding: 15px;"><strong>Seguros y Permisos</strong></td>
+                <td style="padding: 15px;">
+                    Seguro de RC y Accidentes (según Decreto 20/2002 Andalucía), autorización de Medio Ambiente para grupos > 15 personas.
+                </td>
+            </tr>
+
+            <tr style="background-color: #ffffff;">
+                <td style="padding: 15px;"><strong>Ratio de Guías</strong></td>
+                <td style="padding: 15px;">
+                    1 guía por cada 10–15 participantes (nivel medio). En montaña o terreno técnico: 1 guía por cada 6–8 participantes.
+                </td>
+            </tr>
+
+            <tr style="background-color: #f8f9fa;">
+                <td style="padding: 15px;"><strong>Número de Guías Recomendado</strong></td>
+                <td style="padding: 15px;">
+                    Grupo de 20 personas → 2 guías (principal + apoyo).<br>
+                    Grupo de 30 personas → 3 guías.<br>
+                    +1 guía adicional si hay menores o dificultad alta.
+                </td>
+            </tr>
+
+            <tr style="background-color: #ffffff;">
+                <td style="padding: 15px;"><strong>Organización y Seguridad</strong></td>
+                <td style="padding: 15px;">
+                    Briefing previo, control de asistencia, puntos de reunión, plan de evacuación, previsión meteorológica y comunicación por radio.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+  <!-- 4. VALOR AMBIENTAL -->
+  <section id="ambiental">
+    <div class="section-title">
+      <h2>Valor Ambiental</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Preservación y Sostenibilidad</h3>
+      <p>El territorio recorrido destaca por mantener una altísima calidad paisajística y biológica, favorecida por la escasa presión urbanística de la zona. Este aislamiento lo convierte en un escenario óptimo e idóneo para la ejecución de programas de educación ambiental, interpretación del patrimonio y fomento del turismo activo y sostenible.</p>
+    </div>
+  </section>
+ <section id="impacto-emergencia">
+  <div class="section-title">
+    <h2>Impacto Ambiental y Protocolo de Emergencia</h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="info-block">
+
+    <!-- TABLA 1: IMPACTO AMBIENTAL -->
+    <h3> Impacto Ambiental (Leave No Trace)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Norma</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>No dejar residuos</td>
+          <td>Todo el material generado durante la ruta debe ser transportado de vuelta.</td>
+        </tr>
+        <tr>
+          <td>Respeto a flora y fauna</td>
+          <td>No alterar el ecosistema ni interferir con especies animales o vegetales.</td>
+        </tr>
+        <tr>
+          <td>Uso de senderos</td>
+          <td>Prohibido salirse de los caminos señalizados para evitar erosión del terreno.</td>
+        </tr>
+        <tr>
+          <td>Control del ruido</td>
+          <td>Mantener un nivel bajo de ruido para no afectar a la fauna local.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- TABLA 2: PREVENCIÓN -->
+    <h3> Prevención de Riesgos</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Medida</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Supervisión del guía</td>
+          <td>El grupo debe permanecer siempre bajo control del guía responsable.</td>
+        </tr>
+        <tr>
+          <td>Hidratación</td>
+          <td>Consumo frecuente de agua durante todo el recorrido.</td>
+        </tr>
+        <tr>
+          <td>Equipamiento adecuado</td>
+          <td>Uso obligatorio de material técnico adecuado a la actividad.</td>
+        </tr>
+        <tr>
+          <td>Condiciones meteorológicas</td>
+          <td>Evaluación previa del clima antes del inicio de la actividad.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- TABLA 3: EMERGENCIAS -->
+    <h3> Protocolo de Emergencia</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Actuación</th>
+          <th>Procedimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Detención de actividad</td>
+          <td>Parar inmediatamente la ruta ante cualquier incidente.</td>
+        </tr>
+        <tr>
+          <td>Evaluación del herido</td>
+          <td>Comprobar estado físico y nivel de gravedad.</td>
+        </tr>
+        <tr>
+          <td>Primeros auxilios</td>
+          <td>Aplicación de técnicas básicas de asistencia inmediata.</td>
+        </tr>
+        <tr>
+          <td>Emergencias (112)</td>
+          <td>Contacto con servicios de emergencia si es necesario.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- TABLA 4: EVACUACIÓN -->
+    <h3> Evacuación</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Punto de reunión</td>
+          <td>Dirigirse al punto seguro más cercano definido previamente.</td>
+        </tr>
+        <tr>
+          <td>Guía responsable</td>
+          <td>Seguir en todo momento las instrucciones del guía.</td>
+        </tr>
+        <tr>
+          <td>Grupo organizado</td>
+          <td>Mantener siempre la cohesión del grupo.</td>
+        </tr>
+        <tr>
+          <td>Rutas seguras</td>
+          <td>Uso exclusivo de itinerarios establecidos para evacuación.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <!-- TABLA 5: CONTACTO -->
+    <h3> Contacto de Emergencia</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Información</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Emergencias</td>
+          <td>112</td>
+        </tr>
+        <tr>
+          <td>Comunicación interna</td>
+          <td>Radio del equipo de guías</td>
+        </tr>
+        <tr>
+          <td>Rescate</td>
+          <td>Activación de protocolo según gravedad</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+  <!-- MATERIAL NECESARIO PARA LA RUTA -->
+<section id="material">
+  <div class="section-title">
+    <h2>Material necesario para la ruta</h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="info-block">
+    <h3>Equipo individual obligatorio</h3>
+    <ul class="technical-list">
+      <li>Mochila 20-30L</li>
+      <li>Botas de montaña</li>
+      <li>Ropa técnica por capas</li>
+      <li>Chaqueta impermeable</li>
+      <li>Gorra o sombrero</li>
+      <li>Protector solar</li>
+      <li>Gafas de sol</li>
+      <li>Cantimplora (mín. 1L)</li>
+      <li>Comida energética</li>
+      <li>Móvil cargado</li>
+    </ul>
+  </div>
+
+  <div class="info-block">
+    <h3>Recomendaciones de seguridad</h3>
+    <ul class="technical-list">
+      <li>No salirse del sendero</li>
+      <li>Seguir siempre al guía</li>
+      <li>Informar de cualquier incidencia</li>
+      <li>No recoger flora o fauna</li>
+      <li>Respetar el entorno natural</li>
+      <li>Hidratación constante</li>
+    </ul>
+  </div>
+</section>
+
+  <!-- 5. INTERÉS DEPORTIVO -->
+  <section id="deportivo">
+    <div class="section-title">
+      <h2>Interés Deportivo</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Senderismo</h3>
+      <p>Constituye la actividad principal y eje vertebrador de la ruta. El trazado permite trabajar de manera prolongada la resistencia aeróbica de baja intensidad, así como el perfeccionamiento de técnicas de orientación topográfica y adaptación física al medio natural, todo ello bajo un nivel de exigencia catalogado como medio.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Trail Running</h3>
+      <p>La tipología del suelo y el diseño del recorrido hacen que la ruta sea altamente apta para el entrenamiento específico de carrera por montaña. Sus senderos naturales de firme irregular, combinados con un desnivel acumulado moderado y un terreno mixto, ofrecen un circuito técnico ideal para corredores.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Bicicleta de Montaña (MTB)</h3>
+      <p>El itinerario interseca con amplios tramos de pista forestal compactada que permiten el uso seguro de la bicicleta de montaña. Estos sectores son propicios para desarrollar tanto la resistencia cardiovascular en ascensos como la técnica de control y frenado en los tramos de descenso continuo.</p>
+    </div>
+  </section>
+
+  <!-- 6. BENEFICIOS FÍSICOS -->
+  <section id="salud">
+    <div class="section-title">
+      <h2>Beneficios Físicos y Psicológicos</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Mejora Cardiovascular</h3>
+      <p>El esfuerzo continuo exigido por el relieve de la ruta promueve una adaptación fisiológica que incrementa la capacidad pulmonar y optimiza el bombeo cardíaco, previniendo patologías coronarias y mejorando la circulación general del organismo.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Resistencia Muscular</h3>
+      <p>La progresión sostenida a través de desniveles positivos y negativos genera un impacto directo en el fortalecimiento del tren inferior (cuádriceps, isquiotibiales, gemelos) así como en la musculatura estabilizadora del core (abdomen y zona lumbar).</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Coordinación y Equilibrio</h3>
+      <p>El tránsito por firmes irregulares, zonas de piedra suelta y senderos estrechos obliga al sistema nervioso central a trabajar constantemente la propiocepción, lo que resulta en una mejora drástica de la coordinación motriz y el equilibrio dinámico.</p>
+    </div>
+
+    <div class="info-block">
+      <h3>Reducción del Estrés</h3>
+      <p>La inmersión prolongada en un entorno forestal aislado de estímulos urbanos produce un descenso comprobado en los niveles de cortisol (hormona del estrés). La actividad fomenta la relajación psicológica, mitiga la fatiga mental y mejora el estado de ánimo general.</p>
+    </div>
+  </section>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Precios</title>
+  <style>
+    body {
+      color: black;
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 70%;
+      margin: 20px auto;
+      color: black;
+      background-color: white;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 10px;
+      text-align: center;
+      color: black;
+    }
+
+    th {
+      background-color: white;
+      color: black;
+    }
+
+    caption {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+<table>
+  <caption>Precios</caption>
+  <thead>
+    <tr>
+      <th>Tipo de participante</th>
+      <th>Precio base</th>
+      <th>Descuento familias numerosas</th>
+      <th>Precio final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Adulto</td>
+      <td>25 €</td>
+      <td>-20%</td>
+      <td>20 €</td>
+    </tr>
+    <tr>
+      <td>Niño (hasta 12 años)</td>
+      <td>18 €</td>
+      <td>-20%</td>
+      <td>14,40 €</td>
+    </tr>
+    <tr>
+      <td>Grupo estándar</td>
+      <td>22 €</td>
+      <td>-15%</td>
+      <td>18,70 €</td>
+    </tr>
+    <tr>
+      <td>Familias numerosas (acreditadas)</td>
+      <td>22–25 €</td>
+      <td>-20%</td>
+      <td>17,60 € – 20 €</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
+  <!-- 7. BIODIVERSIDAD -->
+  <section id="biodiversidad">
+    <div class="section-title">
+      <h2>Catálogo de Biodiversidad</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Inventario de Flora Autóctona</h3>
+      <p>El estrato vegetal de la zona está perfectamente adaptado al estrés hídrico estival del clima mediterráneo, componiendo un catálogo botánico diverso y fundamental para la retención del suelo:</p>
+      <ul class="technical-list">
+        <li>Pino (Pinus halepensis)</li>
+        <li>Romero (Salvia rosmarinus)</li>
+        <li>Tomillo (Thymus)</li>
+        <li>Encina (Quercus ilex)</li>
+        <li>Jara (Cistus ladanifer)</li>
+        <li>Lentisco (Pistacia lentiscus)</li>
+        <li>Madroño (Arbutus unedo)</li>
+        <li>Hinojo (Foeniculum vulgare)</li>
+        <a href="https://docs.google.com/document/d/1Twf5GE0Kw6E61GHGu5HMYOw4PutsVB65dmgurtCQXVI/edit?usp=sharing" class="btn" target="_blank">mas informacion sobre las plantas </a>
+      </ul>
+    </div>
+
+    <div class="info-block">
+      <h3>Inventario de Fauna Local</h3>
+      <p>El aislamiento geográfico y la diversidad de nichos ecológicos (desde roquedos hasta cauces fluviales) permiten sustentar a diversas especies representativas de la fauna ibérica:</p>
+      <ul class="technical-list">
+        <li>Cabra montés (Capra pyrenaica)</li>
+        <li>Zorro (Vulpes vulpes)</li>
+        <li>Jabalí (Sus scrofa)</li>
+        <li>Águila real (Aquila chrysaetos)</li>
+        <li>Buitre leonado (Gyps fulvus)</li>
+        <li>Cernícalo (Falco tinnunculus)</li>
+        <a href="https://docs.google.com/document/d/1Twf5GE0Kw6E61GHGu5HMYOw4PutsVB65dmgurtCQXVI/edit?usp=sharing" class="btn" target="_blank">mas informacion sobre los animales </a>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. ITINERARIO Y MAPA -->
+  <section id="itinerario">
+    <div class="section-title">
+      <h2>Itinerario y Cartografía</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Puntos de Interés y Geoposicionamiento</h3>
+      <p>Para la correcta ejecución del itinerario, se han establecido coordenadas precisas que determinan los hitos fundamentales de la ruta, desde la gestión inicial del grupo hasta la interpretación del patrimonio geológico.</p>
+      <div class="btn-group">
+     <a href=https://docs.google.com/document/d/18EuMncL2VlMKDXdNN1BiuqB-I2uBEQfgAR2jlA_lrFw/edit?tab=t.0 class="btn" target="_blank">documento de imajenes e informacion de lugares de interes</a>   
+
+        <a href="https://maps.app.goo.gl/h3KrZNqQFkpQYGebA?g_st=ic" class="btn" target="_blank">Punto de Inicio y Parking</a>
+        <a href="https://maps.app.goo.gl/RBRRhi3ooTthD32Y8?g_st=ic" class="btn" target="_blank">Mirador Panorámico</a>
+        <a href="https://maps.app.goo.gl/HwEZjttS4m5xBzp69?g_st=ic" class="btn" target="_blank">Minas Históricas</a>
+        <a href="https://maps.app.goo.gl/HrP2awog6tcTA4RG9?g_st=ic" class="btn" target="_blank">Barranco Blanco</a>
+      </div>
+    </div>
+
+    <div class="info-block" style="padding: 0; border: none; box-shadow: none;">
+      <div id="map-container"></div>
+    </div>
+  </section>
+
+  <!-- 9. DOCUMENTACIÓN TÉCNICA -->
+  <section id="documentacion">
+    <div class="section-title">
+      <h2>Documentación, Evaluación y Multimedia</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="info-block">
+      <h3>Rúbrica de Evaluación Académica</h3>
+      <p>Sistema de criterios para la evaluación de la calidad del guiado y la seguridad del grupo en el medio natural.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Criterio Analizado</th>
+            <th>Nivel Excelente (4)</th>
+            <th>Nivel Notable (3)</th>
+            <th>Nivel Suficiente (2)</th>
+            <th>Nivel Insuficiente (1)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Protocolo de Seguridad</strong></td>
+            <td>Implementación total. Botiquín e instrumental de emergencia completo y revisado.</td>
+            <td>Aplicación correcta pero con carencia de material auxiliar no crítico.</td>
+            <td>Manejo básico de la seguridad. Falta de control preventivo del grupo.</td>
+            <td>Ausencia total de medidas de seguridad y evaluación de riesgos.</td>
+          </tr>
+          <tr>
+            <td><strong>Interpretación Ambiental</strong></td>
+            <td>Transmisión de información técnica, histórica y biológica con alta precisión científica.</td>
+            <td>Exposición correcta de datos generales sobre flora, fauna e historia.</td>
+            <td>Información superficial o incompleta durante las paradas.</td>
+            <td>Nula intervención educativa o datos erróneos.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-block">
+      <h3>Documentos del Proyecto y Difusión</h3>
+      <p>Acceso directo a la memoria técnica redactada, normativas aplicadas y material audiovisual generado para la promoción y análisis de la ruta.</p>
+      <div class="btn-group">
+        <!-- ENLACE ACTUALIZADO DEL DOCUMENTO -->
+        <a href="https://docs.google.com/document/d/1Twf5GE0Kw6E61GHGu5HMYOw4PutsVB65dmgurtCQXVI/edit?usp=sharing" class="btn btn-alt" target="_blank">Memoria del Proyecto Técnico</a>
+        <a href="https://docs.google.com/document/d/1ID1-hsVgrC-wjpYcXBTMcG-EW1-DmNUlDDBDP8HCGxE/edit" class="btn btn-alt" target="_blank">Normativa y Marco Legal</a>
+        <a href="https://loc.wiki/t/258598745?h=gzjvbl9lqz" class="btn btn-alt" target="_blank">Trazado GPS en Wikiloc</a>
+        <a href="https://www.instagram.com/reel/DW-FuDeAky8Lp49AtNZAyFHL2XdSriSZoKvSqI0/" class="btn btn-alt" target="_blank">Material Audiovisual (Instagram)</a>
+        <a href="https://docs.google.com/document/d/1-ECi5dyizbdZZiER8Y6BmR9_7NlR0SZDb9444ITMl1o/edit?usp=drivesdk" class="btn btn-alt" target="_blank">
+    Encuesta de Satisfacción
+</a>
+        <!-- BOTÓN DE RESERVAS WHATSAPP -->
+        <a href="https://wa.me/34622499101" class="btn btn-reserva" target="_blank">Contacto y Reservas (WhatsApp)</a>
+      </div>
+
+     <div style="max-width:900px; margin: 30px auto; text-align:center;">
+  <iframe 
+    width="100%" 
+    height="450" 
+    src="https://www.youtube.com/embed/yyfUs4g6zgM"
+    title="Vídeo explicativo"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
+    style="border:1px solid #ccc; border-radius:6px;">
+  </iframe>
+</div>
+  <footer>
+    <h2 style="color: var(--white); border: none; letter-spacing: 5px; margin-bottom: 10px;">BIOENTORNO</h2>
+    <p style="font-size: 0.9rem; margin-bottom: 5px;">Proyecto de Guía en el Medio Natural y de Tiempo Libre</p>
+    <p style="font-size: 0.75rem; color: var(--accent);">© 2026. Documentación Académica y Profesional. Málaga, España.</p>
+     <p style="font-size: 0.75rem; color: var(--accent);"> CORREO DE CONTACTO adrianrosevear8@gmail.com.</p>
+  </footer>
+
+  <!-- Script de Inicialización del Mapa -->
+  <script>
+    var map = L.map('map-container').setView([36.638, -4.755], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    // Coordenadas de los Puntos de Interés
+    var wpts = [{
+        lat: 36.633153,
+        lng: -4.748428,
+        title: "Punto 1: Parking e Inicio del Trazado"
+      },
+      {
+        lat: 36.647,
+        lng: -4.755,
+        title: "Punto 2: Vértice Panorámico"
+      },
+      {
+        lat: 36.6445,
+        lng: -4.7625,
+        title: "Punto 3: Yacimiento Minero Histórico"
+      },
+      {
+        lat: 36.6398,
+        lng: -4.7563,
+        title: "Punto 4: Ecosistema Barranco Blanco"
+      }
+    ];
+    wpts.forEach(function(pt) {
+      L.marker([pt.lat, pt.lng]).addTo(map).bindPopup("<strong style='color:#1b3d2f;'>" + pt.title + "</strong>");
+    });
+    // Trazado lineal de la ruta
+    var latlngs = [
+      [36.633153, -4.748428],
+      [36.647, -4.755],
+      [36.6445, -4.7625],
+      [36.6398, -4.7563],
+      [36.633153, -4.748428]
+    ];
+    L.polyline(latlngs, {
+      color: '#2d5a27',
+      weight: 5,
+      opacity: 0.9
+    }).addTo(map);
+  </script>
+</body>
+
+</html>
